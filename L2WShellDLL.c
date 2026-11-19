@@ -7,7 +7,7 @@
 #define MAX_LINE 1024
 #define MAX_ARGS 16
 
-int __cdecl ParseCommand(char *line, char *args[], int limit)
+__declspec(dllexport) int __cdecl ParseCommand(char *line, char *args[], int limit)
 {
     int count = 0;
     char *readp = line;
@@ -87,10 +87,6 @@ static int append_token(char *out, size_t capacity, const char *token)
 }
 
  
-static int __cdecl ExecuteCommand(const char *windows_verb, const char *const args[], int argc)
-{
-    return 0;
-}
 
  
 __declspec(dllexport) int __stdcall ExecuteCommand(
@@ -109,7 +105,7 @@ __declspec(dllexport) int __stdcall ExecuteCommand(
         puts("Invalid command.");
         return 1;
     }
-    strcpy(command, windows_verb);
+    strcpy_s(command, sizeof(command), windows_verb);
     for (i = 0; i < argc; ++i) {
         if (!safe_argument(args[i]) ||
             !append_token(command, sizeof(command), args[i])) {
@@ -140,7 +136,7 @@ __declspec(dllexport) int __stdcall ExecuteCommand(
 }
 
  
-#pragma comment(linker, "/EXPORT:MissingExport=NonexistentFunction")
+//#pragma comment(linker, "/EXPORT:MissingExport=NonexistentFunction")
 
  
-#pragma comment(linker, "/EXPORT:ExecuteCommand=_ExecuteCommand@12,NONAME")
+//#pragma comment(linker, "/EXPORT:ExecuteCommand=_ExecuteCommand@12,NONAME")
